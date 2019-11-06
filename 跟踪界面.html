@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>交通预警系统</title>
+    <meta name="applicable-device"content="pc,mobile"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/lab.js"></script>
+    <script>
+        $LAB.script("js/jquery-2.1.1.min.js").wait()
+//                .script("js/http://api.map.baidu.com/api?v=2.0&ak=d5NXGy3npAWo3UbeaWIs6qYzD2PR8thq")
+                .script("js/bootstrap.min.js")
+                .script("js/wsn/camera-1.1.js")
+                .script("js/wsn/WSNCamera.js")
+                .script("js/wsn/WSNRTConnect.js")
+                .script("js/director.min.js")
+                .script("js/qrcode.js")
+                .script("js/config.js")
+                .script("js/script.js")
+    </script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=d5NXGy3npAWo3UbeaWIs6qYzD2PR8thq"></script>
+	<script type="text/javascript" src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+</head>
+<body>
+<!--头部-->
+<div class="header">
+    <div class="icon"><img src="img/icon.png" alt=""></div>
+    <div class="Software-name">交通预警系统</div>
+</div>
+<!--左侧导航-->
+<div class="left-nav">
+    <ul class="navs navs-ul">
+        <li id="MapLi" class="navs-box">
+            <a href="#/Map">
+                <div class="navs-div">
+                <div class="navs-title">地图</div>
+                <img src="img/map.png" alt="">
+            </div>
+            </a>
+            <!--<div class="Triangle" style=" visibility: visible;"></div>-->
+        </li>
+        <li id="MonitorLi" class="navs-box">
+            <a href="#/Monitor">
+                <div class="navs-div" id="monitorNav">
+                    <div class="navs-title">监控</div>
+                    <img src="img/Monitor.png" alt="">
+                </div>
+            </a>
+            <!--<div class="Triangle"></div>-->
+        </li>
+    </ul>
+</div>
+<!--设置按钮-->
+<div class="set-box" data-toggle="modal" data-target="#myModal">
+    <div class="set">
+        <a href="" >
+            <div id="mode_switch"></div>
+        </a>
+    </div>
+</div>
+<!--内容-->
+<div class="contents">
+    <!--地图-->
+    <div id="Map" class="mianLists hidden">
+        <div class="div-l map-l" id="bmap"></div>
+        <div class="div-r map-r text-center">
+            <h3>地图信息</h3>
+            <hr/>
+            <div class="map-mes" id="mapMes">暂无信息</div>
+        </div>
+        <script type="text/javascript">
+			
+            var map,point,xiaochePositionArray,xiaochePolyline;
+            try {
+                setTimeout(function () {
+                    getMap();
+                },100)
+            }
+            catch(error){
+                message_show("地图加载失败！");
+                console.log("地图加载失败："+error);
+                $("#bmap").html("地图加载失败，点我重新加载").on("click", function () {
+                    console.log("重新加载js ");
+                    window.location.reload();
+                });
+            }finally{
+
+            }
+			
+			
+			var websocket = new WebSocket('ws://192.168.1.105:8080'); //创建WebSocket对象
+			var interval
+			
+			websocket.onopen = function (evt) {
+				//已经建立连接
+				interval = setInterval(function () {
+					//向服务器发送消息
+					websocket.send("hello");
+				}, 1000) //循环时间 这里是15秒
+			};
+			websocket.onclose = function (evt) {
+				//已经关闭连接
+				clearInterval(interval);
+			};
+			websocket.onmessage = function (evt) {
+				//收到服务器消息，使用evt.data提取
+				var its = evt.data.split(',');
+				var x = its[0]
+				var y = its[1] 
+				var strPos = "{A0="+x+",A1="+y+"}"
+				console.log(strPos)
+		
+				onmessageArrive("00:12:4B:00:07:16:55:43", strPos)
+			};
+			websocket.onerror = function (evt) {
+				//产生异常
+			}; 
+			
+
+            function getMap(){
+                map = new BMap.Map("bmap");          // 创建地图实例
+                point = new BMap.Point(115.88485,28.708316,{minZoom:13,maxZoom:13});  // 创建点坐标
+                map.addControl(new BMap.NavigationControl());
+                map.centerAndZoom(point, 13.09);                 // 初始化地图，设置中心点坐标和地图级别
+                xiaochePositionArray = [];
+                xiaochePolyline = new BMap.Polyline(xiaochePositionArray,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
+                map.addOverlay(xiaochePolyline);
+                map.enableScrollWheelZoom();
+            }
+        </script>
+        <!--<div class="aside"></div>-->
+    </div>
+    <!--摄像头-->
+    <div id="Monitor" class="mianLists hidden">
+        <div class="div-l camera-l flex">
+            <div class="modalImgDiv flex" data-title="1" title="警报出现时点击可解除">
+                <img src="img/camera1.jpg" class="cameraBlock"/>
+                <img src="img/camera1.jpg" alt=""  class="cameraBlock2"  id="camera_1"/>
+                <button class="btn camera-c openDiv" id="cam_1" data-state="off"></button>
+                <button class="btn camera-c enlarge"></button>
+            </div>
+            <div class="modalImgDiv flex" data-title="2" title="警报出现时点击可解除">
+                <img src="img/camera1.jpg" class="cameraBlock"/>
+                <img src="img/camera1.jpg" alt=""  class="cameraBlock2"  id="camera_2"/>
+                <button class="btn camera-c openDiv" id="cam_2" data-state="off"></button>
+                <button class="btn camera-c enlarge"></button>
+            </div>
+            <div class="modalImgDiv flex" data-title="3" title="警报出现时点击可解除">
+                <img src="img/camera1.jpg" class="cameraBlock"/>
+                <img src="img/camera1.jpg" alt=""  class="cameraBlock2"  id="camera_3"/>
+                <button class="btn camera-c openDiv" id="cam_3" data-state="off"></button>
+                <button class="btn camera-c enlarge"></button>
+            </div>
+            <div class="modalImgDiv flex" data-title="4" title="警报出现时点击可解除">
+                <img src="img/camera1.jpg" class="cameraBlock"/>
+                <img src="img/camera1.jpg" alt=""  class="cameraBlock2"  id="camera_4"/>
+                <button class="btn camera-c openDiv" id="cam_4" data-state="off"></button>
+                <button class="btn camera-c enlarge"></button>
+            </div>
+            <div class="modalImgDiv flex" data-title="5" title="警报出现时点击可解除">
+                <img src="img/camera1.jpg" class="cameraBlock"/>
+                <img src="img/camera1.jpg" alt=""  class="cameraBlock2"  id="camera_5"/>
+                <button class="btn camera-c openDiv" id="cam_5" data-state="off"></button>
+                <button class="btn camera-c enlarge"></button>
+            </div>
+            <div class="modalImgDiv flex" data-title="6" title="警报出现时点击可解除">
+                <img src="img/camera1.jpg" class="cameraBlock"/>
+                <img src="img/camera1.jpg" alt=""  class="cameraBlock2"  id="camera_6"/>
+                <button class="btn camera-c openDiv" id="cam_6" data-state="off"></button>
+                <button class="btn camera-c enlarge"></button>
+            </div>
+            <div class="modalImgDiv flex" data-title="7" title="警报出现时点击可解除">
+                <img src="img/camera1.jpg" class="cameraBlock"/>
+                <img src="img/camera1.jpg" alt=""   class="cameraBlock2" id="camera_7"/>
+                <button class="btn camera-c openDiv" id="cam_7" data-state="off"></button>
+                <button class="btn camera-c enlarge"></button>
+            </div>
+            <div class="modalImgDiv flex" data-title="8" title="警报出现时点击可解除">
+                <img src="img/camera1.jpg" alt=""   class="cameraBlock2" id="camera_8"/>
+                <button class="btn camera-c openDiv" id="cam_8" data-state="off"></button>
+                <button class="btn camera-c enlarge"></button>
+            </div>
+            <div class="modalImgDiv flex" data-title="9" title="警报出现时点击可解除">
+                <img src="img/camera1.jpg" class="cameraBlock"/>
+                <img src="img/camera1.jpg" alt=""  class="cameraBlock2" id="camera_9"/>
+                <button class="btn camera-c openDiv" id="cam_9" data-state="off"></button>
+                <button class="btn camera-c enlarge"></button>
+            </div>
+            <div class="camera-info">
+                <!--<div class="camera_div" >-->
+                    <img src=""id="camera" alt=""/>
+                <!--</div>-->
+                <span class="camera-c-title">0</span>
+            </div>
+        </div>
+        <div class="div-r camera-r text-center">
+            <h3>频道选择</h3>
+            <hr/>
+            <ul class="channel-ul flex" id="channel">
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+                <li>6</li>
+                <li>7</li>
+                <li>8</li>
+                <li>9</li>
+            </ul>
+            <button class="btn btn-primary camera-switch hidden" id="camera_switch">开启</button>
+            <!--<img class="div-r-img" src="img/1.png" alt=""/>-->
+        </div>
+    </div>
+</div>
+<!--设置页面-->
+<div class="modal " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content set-modals">
+            <div id="qrDiv" class="block-center qr-div hidden">
+                <span id="sma" class="text-center text-danger">请在对应窗口点击扫码</span>
+            </div>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <ul id="myTab" class="nav nav-tabs ">
+                    <li><a href="#order" data-toggle="tab">编辑指令</a></li>
+                    <li><a href="#IDKEY" data-toggle="tab">ID与KEY</a></li>
+                    <li><a href="#mac" data-toggle="tab">MAC</a></li>
+                    <li class="active"><a href="#cameraSet" data-toggle="tab">摄像头</a></li>
+                    <li><a href="#jmeter" data-toggle="tab">版本信息</a></li>
+                </ul>
+            </div>
+            <div class="modal-body">
+                <div id="myTabContent" class="tab-content">
+                    <!--指令-->
+                    <div class="tab-pane fade" id="order">
+                        <div class="order-div">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="order_span">指令</span>
+                                <input type="text" class="form-control" placeholder="请输入十六进制数" id="order_mes" >
+                            </div>
+                        </div>
+                        <div class="modal-in-footer text-center">
+                            <button type="button" class="btn btn-primary modal_confirm modal_order_btn" id="order_confirm" onclick="modal.sendOrder()" >发送</button>
+                            <button type="button" class="btn btn-default modal_reset" id="reset" data-scan="id" onclick="modal.reset(this)">重置</button>
+                        </div>
+                    </div>
+                    <!--ID与KEY-->
+                    <div class="tab-pane fade" id="IDKEY">
+                        <div class="idkey-div">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="id_span">ID</span>
+                                <input type="text" class="form-control" placeholder="" id="id_address" >
+                            </div>
+                            <br/>
+                            <div class="input-group">
+                                <span class="input-group-addon">KEY</span>
+                                <input type="text" class="form-control" placeholder="" id="key_address" >
+                            </div>
+                            <br/>
+                            <div class="input-group server-inputs">
+                                <span class="input-group-addon">服务器</span>
+                                <input type="text" class="form-control"  id="server_address" >
+                            </div>
+                            <br/>
+                        </div>
+                        <div class="modal-in-footer">
+                            <!--data-dismiss="modal"-->
+                            <button type="button" class="btn btn-primary modal_confirm" id="id_confirm" onclick="modal.saveIDKEY()" >连接</button>
+                            <button type="button" class="btn btn-default modal_scan" id="scan" data-scan="id" onclick="modal.scan(this)">扫码</button>
+                            <button type="button" class="btn btn-default modal_share" id="id_share"data-share="id" onclick="modal.share(this)"><i class="share-img"><img src="img/share.png"></i><span id="idShareSpan">分享</span></button>
+                        </div>
+                    </div>
+                    <!--mac-->
+                    <div class="tab-pane fade" id="mac">
+                        <div class="mac-in" id="macIn">
+                            <script id="tplList" type="text/template">
+                                <div class="input-group mac-input">
+                                    <span class="input-group-addon">MAC</span>
+                                    <input type="text" class="form-control " id="$macid$" value="$macval$" onblur="modal.saveMac(this)"/>
+                                </div>
+                            </script>
+                        </div>
+                        <div class="modal-in-footer">
+                            <!--data-dismiss="modal"-->
+                            <!--设置mac个数：-->
+                            <!--<input type="text" class="form-control"/>-->
+                            <button type="button" class="btn btn-primary modal_confirm" id="mac_add" onclick="modal.addMac()" >新增</button>
+                            <button type="button" class="btn btn-default modal_scan" id="mac_del" data-state="notready" onclick="modal.delReadyMac(this)">删除</button>
+                        </div>
+                    </div>
+                    <!--安防摄像头-->
+                    <div class="tab-pane fade in active camera-tabpane" id="cameraSet">
+                        <div class="input-group">
+                          <span class="input-group-addon" style="padding: 0 10px;">选择摄像头</span>
+                          <select name="camera_select" class="form-control" id="camera_select" onchange="modal.camera_change()">
+                                <option value="camera_1">摄像头1</option>
+                                <option value="camera_2">摄像头2</option>
+                                <option value="camera_3">摄像头3</option>
+                                <option value="camera_4">摄像头4</option>
+                                <option value="camera_5">摄像头5</option>
+                                <option value="camera_6">摄像头6</option>
+                                <option value="camera_7">摄像头7</option>
+                                <option value="camera_8">摄像头8</option>
+                                <option value="camera_9">摄像头9</option>
+                            </select>
+                        </div><br>
+                        <div class="camera_content" id="camera_content" style="display: block;">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="padding: 0 10px;">地址</span>
+                              <input type="text" class="form-control camera_addr" id="camera_addr" aria-describedby="basic-addon3" >
+                            </div>
+                            <br/>
+                            <div class="input-group">
+                                <span class="input-group-addon" style="padding: 0 10px;">类型</span>
+                                <input type="text" class="form-control camera_type" id="camera_type">
+                            </div>
+                            <br/>
+                            <div class="input-group">
+                                <span class="input-group-addon" style="padding: 0 10px;">用户名</span>
+                                <input type="text" class="form-control camera_user"  id="camera_user">
+                            </div>
+                            <br/>
+                            <div class="input-group">
+                                <span class="input-group-addon" style="padding: 0 10px;">密码</span>
+                                <input type="text" class="form-control camera_pw" id="camera_pw">
+                            </div>
+                            <br/>
+                            <div class="input-group camera_gps">
+                                <span class="input-group-addon" style="padding: 0 10px;">点坐标</span>
+                                <input type="text" class="form-control " id="camera_gps" onblur="modal.checkGps()">
+                            </div>
+                            <div class="modal-in-footer text-right">
+                                <button type="button" class="btn btn-primary camera_confirm" onclick="modal.saveCamera()">确认</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--版本信息-->
+                    <div class="tab-pane fade version-tabpane" id="jmeter">
+                        <a  class="hin-set download-set" id="download" title="hide" onclick="modal.share(this)"><i class="download-app"><img src="img/download1.png"> </i></a>
+                        <div class="download-div hidden" id="downloadDiv"></div>
+                        <p class="text-center">当前版本：<span class="text-red">v1.0.171025</span></p>
+                        <div class="form-group row">
+                            <div class="col-lg-offset-4 col-md-offset-4 col-sm-offset-4 col-xs-offset-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                <button style="width: 185px;margin: 0 auto" id="setUp" type="button" class="btn btn-danger btn-block">版本升级</button>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-offset-4 col-md-offset-4 col-sm-offset-4 col-xs-offset-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                <button style="width: 185px;margin: 0 auto" type="button" class="btn btn-info btn-block" id="showUpdateTxt" data-toggle="collapse" data-target="#updateTxt">查看版本日志</button>
+                            </div>
+                        </div>
+                        <div class="row row-version">
+                            <div id="updateTxt" class="collapse text-center">
+                                <p><b>v1.0.171025</b>         初稿</p><br>
+                                <button class="btn btn-default" id="clear" onclick="page.clearStorage()">清除localStorage</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--延时弹出小框-->
+<div id="toast">
+	<span id="toast_txt">
+	</span>
+</div>
+</body>
+</html>

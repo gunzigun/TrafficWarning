@@ -1,0 +1,805 @@
+html,body{
+    height:100%;
+}
+body{
+    font-family: "Microsoft YaHei";
+    overflow: hidden;
+    user-select: none;
+}
+/*头部*/
+.header{
+    width: 100%;
+    height: 4vw;
+    background: #3c3e65;
+    padding: 0 1vw;
+}
+.icon{
+    float: left;
+    width: 4vw;
+    height: 4vw;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content:center;
+    -webkit-align-items: center;
+    margin-left: 3%;
+}
+.icon img{
+    width: 3vw;
+    height: 3vw;
+}
+.Software-name{
+    float: right;
+    font-size: 2vw;
+    color: #ffffff;
+    line-height: 4vw;
+}
+/*左侧导航*/
+.left-nav{
+    width: 15vw;
+    height:100%;
+    position: fixed;
+    left: 0;
+    top: 4vw;
+}
+.navs{
+    width:100%;
+    height: 100%;
+}
+.navs-ul{
+    margin-top: 30%;
+}
+.navs li{
+    width:100%;
+    height:20%;
+    margin: 8% 0;
+    cursor: pointer;
+}
+.navs li a{
+    display: block;
+    width: 7.5vw;
+    height: 7.5vw;
+}
+.navs li.active .navs-div{
+    /*transform: scale(1.2,1.2);*/
+    opacity: 1;
+}
+.navs-box{
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+}
+.navs-div{
+    width:100%;
+    height:100%;
+    border-radius: 15px;
+    background:#4b4a48;
+    transition: all 0.3s;
+    opacity: .5;
+    border:5px solid #fff;
+}
+.navs-div.alarm-active{
+    border:5px solid red !important;
+}
+.navs-title{
+    line-height: 4vw;
+    color: #ffffff;
+    text-align: center;
+    font-size: 1.1vw;
+}
+.navs-div img{
+    width: 1.5vw;
+    height: 1.5vw;
+    margin: 0 auto;
+    display: block;
+}
+.navs-div:hover, .navs-box.active .navs-div{
+    border:5px solid #b3b0c4;
+    /*background-color: #163029;*/
+    transition: all 0.3s;
+    opacity: 1;
+}
+.active1{
+    width:5.5vw;
+    height: 5.5vw;
+}
+/*内容部分*/
+.contents{
+    width: 82vw;
+    height:89vh;
+    position: absolute;
+    top:10vh;
+    left:15vw;
+    background:#4b4a48;
+    /*margin:2% 2% 2% 0;*/
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    border-radius: 20px;
+    transition: all .3s;
+}
+.contents:after{
+    content:'';
+    position: absolute;
+    left:-3vw;
+    top:11vh;
+    width:5vw;
+    height:5vw;
+    background: url('../img/arrow.png') no-repeat center center;
+    background-size: 100%;
+    transition: all .15s;
+}
+.contents.camera-on:after{
+    top:33.5vh;
+    transition: all .15s;
+}
+.contents .mianLists{
+    width: 80vw;
+    height:83vh;
+    background: #ffffff;
+    justify-content: flex-start;
+    /*align-items: flex-start;*/
+    overflow: hidden;
+}
+.Triangle{
+    position: absolute;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-right: 25px solid #4b4a48;
+    border-bottom: 10px solid transparent;
+    visibility: hidden;
+}
+.active2{
+    visibility: visible;
+}
+/*地图*/
+.map-l{
+    width:64vw;
+    height:100%;
+    border: 3px solid #eee;
+    border-radius: 5px; }
+.map-r{
+    width:26vw;
+    height:78vh;
+    float:right;
+    padding:0 1vw;
+}
+.map-mes{
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.map-mes span{
+    display: inline-block;
+    white-space: nowrap;
+}
+.map-btns{
+    position: absolute;
+    z-index: 99;
+}
+.map-btns .map-btn{
+    padding:.8vw 1.8vw;
+    background-color: #aaaaaa;
+    color:#fff;
+    float:left;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    margin:1vw;
+}
+.map-btn.active{
+    background-color: #de9100;
+}
+.map-div{
+    text-align: center;
+    line-height: 100vh;
+}
+#Map label{
+    max-width: none;
+}
+.aside{
+    width: 20%;
+    height: 100%;
+    position: relative;
+    float: left;
+    background: #eeeeee;
+}
+/*摄像头*/
+.div-l{
+    float: left;
+    width:60vw;
+    height:83vh;
+    text-align: center;
+    line-height: 83vh;
+    cursor: pointer;
+}
+.camera-l{
+    position: relative;
+}
+.modalImgDiv{
+    position: relative;
+    width: 16vw;
+    height: 24vh;
+    border: 1px solid #ddd;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin:.5vw 1.5vw;
+    /*background: url('../img/camera1.jpg') no-repeat center center;*/
+    /*background-size: 50%;*/
+    overflow: hidden;
+}
+.modalImgDiv:after{
+    content:attr(data-title);
+    position: absolute;
+    bottom:-1.5vw;
+    right:-1.5vw;
+    width:3vw;
+    height:3vw;
+    text-align: left;
+    text-indent: .5vw;
+    line-height: 1.75vw;
+    border-radius: 100%;
+    color:#fff;
+    background-color: #50834b;
+    z-index: 11;
+}
+.modalImgDiv.alarm-active{
+    border:3px solid red;
+    cursor: pointer;
+    overflow: hidden;
+}
+.modalImgDiv.alarm-active:before{
+    content: "";
+    position: absolute;
+    left:50%;
+    top:50%;
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    color:red;
+    background-color: #fff;
+    width:80%;
+    height:80%;
+    font-size: 2vw;
+    background-color: transparent;
+    background-image: url('../img/alert.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 0;
+    text-align: center;
+    z-index: 9;
+    /*background-color: red !important;*/
+    -webkit-animation: animatedBackground 0.7s linear infinite 1s;
+    animation: animatedBackground 0.7s linear infinite 1s;
+}
+
+@keyframes animatedBackground {
+    0%, 100% {
+        -webkit-transform: translate(-50%,-50%);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        -webkit-transform: translate(-49%,-50%);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+        -webkit-transform: translate(-51%,-50%);
+    }
+}
+
+@-webkit-keyframes animatedBackground {
+    0%, 100% {
+        -webkit-transform: translate(-50%,-50%);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        -webkit-transform: translate(-49%,-50%);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+        -webkit-transform: translate(-51%,-50%);
+    }
+}
+.modalImgDiv img{
+    /*cursor: pointer;*/
+    width: 100%;
+    /*height:100%;*/
+    /*height: 25vh;*/
+}
+.img-full{
+    height:100%;
+}
+.modalImgDiv.alarm-active img{
+    filter:blur(2px);
+}
+.control{
+    width: 10%;
+    height: 100%;
+    background:#eeeeee;
+    float: right;
+}
+.openDiv{
+    position: absolute;
+    bottom:0;
+    left:0;
+    width:4vw;
+    height:4.1vw;
+    background-image: url('../img/off.png') !important;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 3vw;
+    background-color: transparent;
+    text-indent: -9999px;
+    transition: all 0.3s;
+    -webkit-transition:all 0.3s;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none !important;
+    z-index: 10;
+}
+.openDiv.active{
+    background-image: url('../img/on.png') !important;
+    box-shadow: none;
+}
+.openDiv:focus, .openDiv:active{
+    outline: none !important;
+    box-shadow: none !important;
+}
+.enlarge{
+    display: none !important;
+    width:4vw;
+    height:4.1vw;
+    background-image: url('../img/enlarge.png') !important;
+    background-repeat: no-repeat;
+    background-size: 3vw;
+    background-color: transparent;
+    text-indent: -9999px;
+    transition: all 0.3s;
+    -webkit-transition:all 0.3s;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+.narrow{
+    width:4vw;
+    height:4.1vw;
+    background-image: url('../img/narrow.png');
+    background-repeat: no-repeat;
+    background-size: 4vw;
+    background-color: transparent;
+    text-indent: -9999px;
+    transition: all 0.3s;
+    -webkit-transition:all 0.3s;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+.control-btns button{
+    width: 4vw;
+    height: 4vw;
+    display: block;
+    margin: 3vw auto;
+}
+.camer-pic{
+    width: 100%;
+    height: 100%;
+}
+.camera-info{
+    position: absolute;
+    top:0;
+    left:0;
+    width:0;
+    height:0;
+    background-color: #4b4a48;
+    transition: all .3s;
+}
+.camera-info img{
+    width:100%;
+    height:100%;
+}
+.camera_div{
+    width:100%;
+    height:100%;
+}
+.camera-switch{
+    z-index: 99;
+}
+.camera-info-active{
+    width:100%;
+    height:100%;
+    transition: all .3s;
+    z-index: 100;
+}
+.camera-c-title{
+    position: absolute;
+    bottom:1vh;
+    right:1vw;
+    color:#fff;
+    font-size: 2vw;
+    line-height: 1vw;
+}
+.cameraBlock{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+.cameraBlock+img{
+    display: none;
+}
+.img-loading{
+    width:2vw !important;
+    left:50% !important;
+    top:50% !important;
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+}
+.div-r{
+    position: relative;
+    float: right;
+    width:20vw;
+    height:100%;
+    padding:0 1vw;
+    background: url('../img/2.png') no-repeat center 90%;
+    background-size: 10vw;
+    filter:alpha(opacity=80);
+}
+.div-r h3{
+    color:#aaa;
+}
+.div-r-img{
+    position: absolute;
+    bottom:5vh;
+    left:50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    width:10vw;
+    opacity: .3;
+    /*filter:;*/
+}
+.camera-r{
+    background: url("../img/1.png") no-repeat center 90%;
+    background-size: 10vw;
+}
+.channel-ul{
+    width:100%;
+}
+.channel-ul li{
+    width:4vw;
+    height:4vw;
+    margin:1.25vw .7vw;
+    float:left;
+    border-radius: 100%;
+    line-height: 4vw;
+    background-color: #50834b;
+    color:#fff;
+    cursor: pointer;
+    font-size: 1.35vw;
+    transition: all .3s;
+}
+.channel-ul li:focus,.channel-ul li:active,.channel-ul li:focus,.channel-ul li:focus{
+    background-color: #222222;
+}
+.channel-ul li.active{
+    background-color: #4b4a48;
+}
+.channel-ul li:hover{
+    color:#ffff00;
+}
+/*设置*/
+.set-box{
+    width: 10%;
+    height: 20%;
+    position: absolute;
+    z-index: 2;
+    bottom: 3vh;
+    left:3vw;
+    width: 9vw;
+    height: 9vw;
+    border-radius: 100%;
+    color: #ffffff;
+    font-weight: 400;
+    background:url('../img/setting.png') no-repeat center center;
+    background-size: 50% 50%;
+    cursor: pointer;
+}
+.set-box:hover, .set-box:focus, .set-box-active{
+    -webkit-animation: rotateMove 3s infinite linear;
+    animation: rotateMove 3s infinite linear;
+}
+
+/*旋转动画*/
+@keyframes rotateMove {
+    0%{transform: rotate(0deg)}
+    100%{transform: rotate(360deg)}
+}
+
+@-webkit-keyframes rotateMove {
+    0%{-webkit-transform: rotate(0deg)}
+    100%{-webkit-transform: rotate(360deg)}
+}
+
+/*设置页面*/
+.share-img img{
+    width: 1.2vw;
+    height: 1.2vw;
+    margin-right: 5px;
+}
+.modal .modal_share,#cameraShareSpan{
+    color: #50834b;
+}
+.share-img img{
+    width: 1.2vw;
+    height: 1.2vw;
+    margin-right: 5px;
+}
+/*设置页面*/
+.set-modal .modal-body{
+    overflow: hidden;
+}
+.set-li a:focus{
+    outline: none;
+}
+.modal-open .login-img{
+    display: none;
+}
+.modal .modal-dialog .modal-content .modal-header .close span {
+    font-size: 30px !important; }
+.modalCol {
+    text-align: center; }
+
+.modal {
+    color:#444;
+    margin: 0 auto;
+    overflow-y: hidden !important; }
+.modal .btn-group .btn {
+    padding: 6px 12px;
+    overflow: hidden; }
+.modal .btn-group .btn .filter-option {
+    display: block !important;
+    line-height: 1.42857143;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%); }
+.modal .btn-group .btn .filter-option:focus {
+    outline: none !important; }
+.modal .modal-header {
+    border-bottom: none; }
+.modal .modal-body #mac {
+    width: 100%;
+    border-top: none !important; }
+.modal .modal-body .mac-in {
+    padding-right: 5px;
+    max-height: 35vw;
+    overflow-y: auto; }
+.mac-in .input-group{
+    margin-bottom: 17px;
+}
+.mac-input{
+    /*text-indent: 0;*/
+}
+.mac-active{
+    position: relative;
+    text-indent: -999px;
+    cursor: pointer;
+}
+.mac-active:after{
+    content: '-';
+    position: absolute;
+    top:50%;
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    left:50%;
+    width:2vw;
+    height:2vw;
+    color:#fff;
+    background:url('../img/del.png') no-repeat center center;
+    background-size: 80% 80%;
+    border-radius: 100%;
+    text-align: center;
+    font-size: 1.45vw;
+    line-height: 2vw;
+    z-index: 9;
+    cursor: pointer;
+}
+.mac-ready{
+    position: relative;
+    text-align: center;
+}
+.mac-ready input{
+    /*filter:blur(.8px);*/
+    background-color: #cccccc;
+}
+.mac-ready .mac-active:after{
+    content: "撤销";
+    position: absolute;
+    left:50%;
+    top:50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width:2vw;
+    height:2vw;
+    line-height: 2vw;
+    color:#000000;
+    background: transparent;
+    /*background-size: 1.5vw;*/
+    opacity: 0.7;
+    font-size: 1vw;
+    text-indent: 0;
+    z-index: 99;
+    /*line-height: 18vw;*/
+}
+.modal .modal-body .modal-in-footer {
+    padding: 15px 0 0 15px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+}
+.modal .modal-body .modal-in-footer .btn {
+    width: 9vw;
+    cursor: pointer;
+}
+.modal_order_btn{
+    margin:0 auto;
+}
+.modal .modal-body .modal-in-footer .btn + .btn {
+    margin-bottom: 0;
+    margin-left: 5px; }
+.modal .modal-body .text-red {
+    color: red !important; }
+.modal #IDKEY .input-group-addon {
+    width: 71px !important;
+    padding: 0; }
+.modal #cameraSet .input-group-addon {
+    width: 20% !important;
+    padding: 0; }
+.modal #cameraSet .form-control {
+    width: 480px;
+}
+.modal #IDKEY .form-control {
+    width: 480px;
+}
+.modal .mac-in .input-group-addon {
+    width: 71px !important;
+    padding: 0;
+}
+.modal .mac-in .form-control {
+    width: 480px;
+}
+#camera_select{
+    padding:5px;
+}
+.camera-tabpane .input-group-addon{
+    width:71px !important;
+}
+
+.camera-tabpane .form-control{
+    width: 480px;
+}
+.camera_content{
+    display: none;
+}
+.camera_gps{
+    position: relative;
+}
+.camera_gps_active:after{
+    content:'刷新后查看效果';
+    position: absolute;
+    right:10px;
+    /*top:50%;*/
+    z-index: 22;
+    color:red;
+    font-size: .8vw;
+    line-height: 34px;
+    opacity: .7;
+}
+
+
+.modal #jmeter .row {
+    padding: 0; }
+.modal .modal_share {
+    color: #50834b; }
+.modal .modal_share .btn {
+    width: 8vw; }
+#myTab li a{
+    color: #000;
+    font-size: 14px;
+}
+#idShareSpan{
+    /*color: #ffffff;*/
+}
+#download-head{
+    text-align: center;
+}
+#download-img img{
+    max-height: 210px;
+}
+/*分享二维码的生成*/
+.qr-div{
+    background-color: #fff;
+    position: absolute;
+    left:50%;
+    top:1vw;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    z-index: 99;
+    width:100%;
+    height:70%;
+    text-align: center;
+    overflow: hidden;
+    padding-top: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#sma{
+    position: absolute;
+    top: 0.5vw;
+    font-size: 16px;
+    text-align: center;
+}
+#idShareSpan{
+    font-size: 14px;
+    /*color: #fff;*/
+}
+#toast {
+    z-index: 1041;
+    position: absolute;
+    left: 50%;
+    bottom: 3rem;
+    margin: auto;
+    opacity: 0;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    font-size: 1.2vw;
+    border-radius: 8px;
+    padding: 0.8em 1.25em 0.8em 1.5em;
+    text-indent: 3vw;
+    color: #d81e06;
+    transition: all ease-in-out 0.15s;
+    background: url("../img/message.png") no-repeat 1.25vw center #fff;
+    background-size: 2vw;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.5);
+    pointer-events: none;}
+
+.toast_show {
+    bottom: 4rem !important;
+    opacity: 1 !important; }
+
+.flex{
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+.flex-column{
+    flex-direction: column;
+}
+.btn-primary{
+    background-color: #3c3e65 !important;
+    border-color: #3c3e65 !important;
+}
+.modal-backdrop{
+    z-index: 999;
+}
